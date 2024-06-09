@@ -1,3 +1,9 @@
+# SQLite database
+sqlite.db
+
+# Temp files
+temp
+
 # Logs
 logs
 *.log
