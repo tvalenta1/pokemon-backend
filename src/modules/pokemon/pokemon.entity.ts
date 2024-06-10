@@ -1,4 +1,9 @@
-import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
+import { Collection, Entity, PrimaryKey, ManyToMany, OneToOne, OneToMany, Property } from '@mikro-orm/core';
+import { Element } from './element.entity.js';
+import { Height } from './height.entity.js';
+import { Weight } from './weight.entity.js';
+import { EvolutionRequirement } from './evolutionrequirement.entity.js';
+import { Attack } from './attack.entity.js';
 
 @Entity()
 export class Pokemon {
@@ -11,20 +16,20 @@ export class Pokemon {
   @Property()
   classification!: string;
 
-  // @Property()
-  // types!: string;
+  @ManyToMany()
+  types = new Collection<Element>(this);
 
-  // @Property({ type: 'text' })
-  // resistant = '';
+  @ManyToMany()
+  resistant = new Collection<Element>(this);
 
-  // @Property()
-  // weaknesses = "";
+  @ManyToMany()
+  weaknesses = new Collection<Element>(this);
   
-  // @Property()
-  // weight: min, max
-  
-  // @Property()
-  // weight: min, max
+  @OneToOne()
+  weight!: Weight;
+
+  @OneToOne()
+  height!: Height;
 
   @Property()
   fleeRate!: number;
@@ -35,12 +40,12 @@ export class Pokemon {
   @Property()
   maxHP!: number;
 
-  // @Property()
-  // evolutionRequirements: {"amount": 25, "name": "Bulbasaur candies" },
+  @OneToOne()
+  evolutionRequirements!: EvolutionRequirement;
 
-  // @Property()
-  // evolutions: []
+  @ManyToMany()
+  evolutions = new Collection<Pokemon>(this);
 
-  // @Property()
-  // attacks: {fast: [{"name": "Tackle", "type": "Normal","damage": 12}],"special": []
+  @OneToMany({ mappedBy: "pokemon" })
+  attacks = new Collection<Attack>(this);
 }

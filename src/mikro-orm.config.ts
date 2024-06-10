@@ -1,5 +1,7 @@
 import { Options, SqliteDriver } from '@mikro-orm/sqlite';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
+import { SeedManager } from '@mikro-orm/seeder';
+import { Migrator } from '@mikro-orm/migrations';
 
 const config: Options = {
   // for simplicity, we use the SQLite database, as it's available pretty much everywhere
@@ -14,7 +16,8 @@ const config: Options = {
   // enable debug mode to log SQL queries and discovery information
   debug: true,
   // for vitest to get around `TypeError: Unknown file extension ".ts"` (ERR_UNKNOWN_FILE_EXTENSION)
-  dynamicImportProvider: id => import(id)
+  dynamicImportProvider: id => import(id),
+  extensions: [SeedManager, Migrator],
 };
 
 export default config;

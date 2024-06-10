@@ -24,6 +24,13 @@ export async function bootstrap(port = 3000) {
     return { items, total };
   });
 
+  app.get('/pokemons', async request => {
+    const { limit, offset } = request.query as { limit?: number; offset?: number };
+    const [items, total] = await db.pokemon.findAndCount({}, { limit, offset });
+  
+    return { items, total };
+  });
+
   const url = await app.listen({ port });
 
   return { app, url };
