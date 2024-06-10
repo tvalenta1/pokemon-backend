@@ -289,6 +289,14 @@
     globby "11.1.0"
     ts-morph "22.0.0"
 
+"@mikro-orm/seeder@^6.2.9":
+  version "6.2.9"
+  resolved "https://registry.yarnpkg.com/@mikro-orm/seeder/-/seeder-6.2.9.tgz#975ec1d414b76afa14a7dbe0b20cc4c121c781ec"
+  integrity sha512-lmuAe/yXIzjFuYpIxnkcCL0/ZZLXbhmcpdXeYhQW79rYZbZ1WMref9m5EwbOjFtHlrPn73OLSF9ZeXQcF4Rn0g==
+  dependencies:
+    fs-extra "11.2.0"
+    globby "11.1.0"
+
 "@mikro-orm/sqlite@^6.2.9":
   version "6.2.9"
   resolved "https://registry.yarnpkg.com/@mikro-orm/sqlite/-/sqlite-6.2.9.tgz#283fe73e79781738c34139d5c92d0374788a89e3"

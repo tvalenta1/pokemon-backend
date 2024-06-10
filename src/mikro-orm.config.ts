@@ -13,6 +13,8 @@ const config: Options = {
   metadataProvider: TsMorphMetadataProvider,
   // enable debug mode to log SQL queries and discovery information
   debug: true,
+  // for vitest to get around `TypeError: Unknown file extension ".ts"` (ERR_UNKNOWN_FILE_EXTENSION)
+  dynamicImportProvider: id => import(id)
 };
 
 export default config;
