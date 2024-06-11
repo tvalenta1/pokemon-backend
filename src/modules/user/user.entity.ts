@@ -1,4 +1,5 @@
-import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
+import { Entity, PrimaryKey, OneToOne, Property } from '@mikro-orm/core';
+import { Session } from '../authentication/session.entity.js';
 
 @Entity()
 export class User {
@@ -6,7 +7,10 @@ export class User {
     id!: number;
 
     @Property()
-    fullName!: string;
+    firstName!: string;
+
+    @Property()
+    lastName!: string;
 
     @Property()
     email!: string;
@@ -14,8 +18,8 @@ export class User {
     @Property()
     password!: string;
 
-    @Property({ type: 'text' })
-    bio = '';
+    @OneToOne()
+    session?: Session;
 
     @Property()
     createdAt = new Date();

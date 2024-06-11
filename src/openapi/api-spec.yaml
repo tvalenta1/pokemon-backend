@@ -1,0 +1,175 @@
+openapi: 3.0.3
+info:
+  title: Pokemons backend (Code Challenge)
+  description: |-
+    This is a backend API for Pokemon app.
+  contact:
+    email: tvalenta1@gmail.com
+  version: 1.0.0
+servers:
+  - url: http://localhost
+tags:
+  - name: pet
+    description: Everything about your Pets
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+  - name: store
+    description: Access to Petstore orders
+    externalDocs:
+      description: Find out more about our store
+      url: http://swagger.io
+  - name: user
+    description: Operations about user
+paths:
+  /pokemons:
+    get:
+      tags:
+        - pet
+      summary: Finds Pets by status
+      description: Multiple status values can be provided with comma separated strings
+      operationId: getPokemons
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pokemon"
+      security:
+        - bearer_auth: []
+  /pokemons/{pokemonId}:
+    get:
+      tags:
+        - pet
+      summary: Finds Pets by status
+      description: Multiple status values can be provided with comma separated strings
+      operationId: getPokemon
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pokemon"
+      security:
+        - bearer_auth: []
+  /auth:
+    post:
+      tags:
+        - Authentication
+      summary: Authenticate
+      description: Post username and password to obtain bearer token
+      operationId: authenticate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        "200":
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+components:
+  schemas:
+    Element:
+      type: string
+      enum:
+        - Bug
+        - Dragon
+        - Electric
+        - Fairy
+        - Fighting
+        - Fire
+        - Flying
+        - Ghost
+        - Grass
+        - Ground
+        - Ice
+        - Normal
+        - Poison
+        - Psychic
+        - Rock
+        - Steel
+        - Water
+    Pokemon:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        classification:
+          type: string
+        types:
+          type: array
+          items:
+            $ref: "#/components/schemas/Element"
+        resistant:
+          type: array
+          items:
+            $ref: "#/components/schemas/Element"
+        weaknesses:
+          type: array
+          items:
+            $ref: "#/components/schemas/Element"
+        weight:
+          $ref: "#/components/schemas/BodyCharacteristic"
+        height:
+          $ref: "#/components/schemas/BodyCharacteristic"
+        fleeRate:
+          type: number
+          format: double
+        evolutionRequirements:
+          type: object
+          properties:
+            amount:
+              type: integer
+            name:
+              type: string
+        maxCP:
+          type: integer
+        maxHP:
+          type: integer
+    Move:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Tackle
+        damage:
+          type: integer
+        type:
+          $ref: "#/components/schemas/Element"
+    Attack:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          $ref: "#/components/schemas/Move"
+    BodyCharacteristic:
+      type: object
+      properties:
+        minimum:
+          type: string
+        maximum:
+          type: string
+  securitySchemes:
+    bearer_auth:
+      type: http
+      scheme: bearer

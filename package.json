@@ -13,12 +13,18 @@
     "@mikro-orm/reflection": "^6.2.9",
     "@mikro-orm/seeder": "^6.2.9",
     "@mikro-orm/sqlite": "^6.2.9",
-    "fastify": "^4.27.0"
+    "convict": "^6.2.4",
+    "fastify": "^4.27.0",
+    "fastify-openapi-glue": "^4.6.0",
+    "jsonwebtoken": "^9.0.2",
+    "pino-pretty": "^11.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.4.0",
     "@mikro-orm/cli": "^6.2.9",
+    "@types/convict": "^6.1.6",
     "@types/eslint__js": "^8.42.3",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.14.2",
     "eslint": "^9.4.0",
     "eslint-config-prettier": "^9.1.0",
