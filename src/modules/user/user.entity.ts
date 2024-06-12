@@ -1,5 +1,4 @@
-import { Entity, PrimaryKey, OneToOne, Property } from '@mikro-orm/core';
-import { Session } from '../authentication/session.entity.js';
+import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
 
 @Entity()
 export class User {
@@ -17,13 +16,4 @@ export class User {
 
     @Property()
     password!: string;
-
-    @OneToOne()
-    session?: Session;
-
-    @Property()
-    createdAt = new Date();
-    
-    @Property({ onUpdate: () => new Date() })
-    updatedAt = new Date();
 }
