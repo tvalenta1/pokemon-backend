@@ -7,7 +7,7 @@ info:
     email: tvalenta1@gmail.com
   version: 1.0.0
 servers:
-  - url: http://localhost
+  - url: http://localhost:3000
 tags:
   - name: pet
     description: Everything about your Pets
