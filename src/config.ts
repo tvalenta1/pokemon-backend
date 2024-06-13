@@ -11,7 +11,7 @@ const schema = {
   JWT_EXPIRY: {
     doc: "Expiry of the JWT token (in seconds).",
     format: "nat",
-    default: 60 * 60, //One hour
+    default: 60 * 60, //Token expires in one hour
     env: "JWT_EXPIRY"
   }
 };

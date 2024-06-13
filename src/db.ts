@@ -1,4 +1,5 @@
 import { EntityManager, EntityRepository, MikroORM, Options } from '@mikro-orm/sqlite';
+import { NotFoundError } from "@mikro-orm/core";
 import { User } from "./modules/user/user.entity.js";
 import { Pokemon } from './modules/pokemon/pokemon.entity.js';
 
@@ -18,7 +19,6 @@ export async function initORM(options?: Options): Promise<Services> {
 
   const orm = await MikroORM.init(options);
 
-  // save to cache before returning
   return cache = {
     orm,
     em: orm.em,

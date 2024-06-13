@@ -1,5 +1,6 @@
 import crypto from 'crypto';
-import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
+import { Collection, Entity, PrimaryKey, ManyToMany, Property } from '@mikro-orm/core';
+import { Pokemon } from '../pokemon/pokemon.entity.js';
 
 @Entity()
 export class User {
@@ -12,11 +13,14 @@ export class User {
     @Property()
     lastName!: string;
 
-    @Property()
+    @Property({ unique: true })
     email!: string;
 
-    @Property()
+    @Property({ hidden: true })
     password!: string;
+
+    @ManyToMany()
+    favoritePokemons = new Collection<Pokemon>(this);
 
     constructor(firstName: string, lastName: string, email: string, password: string) {
       this.firstName = firstName;

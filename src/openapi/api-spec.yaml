@@ -21,6 +21,8 @@ tags:
       url: http://swagger.io
   - name: user
     description: Operations about user
+security:
+  - bearer_auth: []
 paths:
   /pokemons:
     get:
@@ -38,8 +40,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Pokemon"
-      security:
-        - bearer_auth: []
     post:
       tags:
         - Pokemons
@@ -69,16 +69,9 @@ paths:
                     type: integer
                   name:
                     type: string
-      security:
-        - bearer_auth: []
   /pokemons/{pokemonId}:
     parameters:
-      - name: pokemonId
-        in: path
-        description: ID of the Pokemon
-        required: true
-        schema:
-          type: integer
+      - $ref: "#/components/parameters/pokemonId"
     get:
       tags:
         - Pokemons
@@ -92,8 +85,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Pokemon"
-      security:
-        - bearer_auth: []
   /users:
     get:
       tags:
@@ -110,8 +101,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/User"
-      security:
-        - bearer_auth: []
     post:
       tags:
         - Users
@@ -130,17 +119,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
-      security:
-        - bearer_auth: []
   /users/{userId}:
-    get:
-      parameters:
+    parameters:
         - name: userId
           in: path
           description: ID of the User
           required: true
           schema:
             type: integer
+    get:
       tags:
         - Users
       summary: Get user
@@ -153,8 +140,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
-      security:
-        - bearer_auth: []
     put:
       tags:
         - Users
@@ -173,12 +158,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
-      security:
-        - bearer_auth: []
+    delete:
+      tags:
+        - Users
+      summary: Delete user
+      description: Deletes user
+      operationId: deleteUser
+      responses:
+        "204":
+          description: User delete successfully
   /auth:
     post:
       tags:
         - Authentication
+      security: []
       summary: Authenticate
       description: Post username and password to obtain bearer token
       operationId: authenticate
@@ -205,6 +198,46 @@ paths:
                 properties:
                   token:
                     type: string
+  /favorite_pokemons:
+    get:
+      tags:
+        - Users
+        - Pokemons
+      summary: Get favorite pokemons
+      description: Returns user's favorite pokemons.
+      operationId: getFavoritePokemons
+      responses:
+        "200":
+          description: Favorite Pokemons returned successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Pokemon"
+  /favorite_pokemons/{pokemonId}:
+    parameters:
+        - $ref: "#/components/parameters/pokemonId"
+    post:
+      tags:
+        - Users
+        - Pokemons
+      summary: Make favorite pokemon
+      description: Sets pokemon to be user's favorite.
+      operationId: setFavoritePokemon
+      responses:
+        "204":
+          description: Pokemon set favorite successfully
+    delete:
+      tags:
+        - Users
+        - Pokemons
+      summary: Remove favorite pokemon
+      description: Removes Pokemon from user's favorites.
+      operationId: removeFavoritePokemon
+      responses:
+        "204":
+          description: Pokemon removed from favorites successfully
 components:
   schemas:
     PokemonType:
@@ -341,6 +374,14 @@ components:
           format: password
           # writeOnly: true
       required: [firstName, lastName, email, password]
+  parameters:
+    pokemonId:
+      in: path
+      name: pokemonId
+      required: true
+      schema:
+        type: integer
+      description: ID of the Pokemon
   securitySchemes:
     bearer_auth:
       type: http
