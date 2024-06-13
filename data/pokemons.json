@@ -2613,7 +2613,7 @@
       "maximum": "0.9m"
     },
     "fleeRate": 0.07,
-    "Previous evolution(s)": [
+    "previousEvolutions": [
       {
         "id": 43,
         "name": "Oddish"

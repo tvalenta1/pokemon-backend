@@ -25,33 +25,154 @@ paths:
   /pokemons:
     get:
       tags:
-        - pet
-      summary: Finds Pets by status
-      description: Multiple status values can be provided with comma separated strings
+        - Pokemons
+      summary: Get Pokemons
+      description: Returns all Pokemons.
       operationId: getPokemons
       responses:
         '200':
-          description: successful operation
+          description: Pokemons returned successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Pokemon"
+      security:
+        - bearer_auth: []
+    post:
+      tags:
+        - Pokemons
+      summary: Create Pokemon
+      description: Creates new Pokemon.
+      operationId: createPokemon
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Pokemons returned successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [id, name]
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+      security:
+        - bearer_auth: []
+  /pokemons/{pokemonId}:
+    parameters:
+      - name: pokemonId
+        in: path
+        description: ID of the Pokemon
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+        - Pokemons
+      summary: Get Pokemon
+      description: Returns one Pokemon identified by its ID.
+      operationId: getPokemon
+      responses:
+        '200':
+          description: Pokemon returned successfully.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Pokemon"
       security:
         - bearer_auth: []
-  /pokemons/{pokemonId}:
+  /users:
     get:
       tags:
-        - pet
-      summary: Finds Pets by status
-      description: Multiple status values can be provided with comma separated strings
-      operationId: getPokemon
+        - Users
+      summary: Get users
+      description: Returns all users
+      operationId: getUsers
       responses:
-        '200':
-          description: successful operation
+        "200":
+          description: Users returned successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Pokemon"
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+      security:
+        - bearer_auth: []
+    post:
+      tags:
+        - Users
+      summary: Create user
+      description: Creates new user
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+      security:
+        - bearer_auth: []
+  /users/{userId}:
+    get:
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the User
+          required: true
+          schema:
+            type: integer
+      tags:
+        - Users
+      summary: Get user
+      description: Returns user
+      operationId: getUser
+      responses:
+        "200":
+          description: User returned successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+      security:
+        - bearer_auth: []
+    put:
+      tags:
+        - Users
+      summary: Update user
+      description: Updates user
+      operationId: updateUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
       security:
         - bearer_auth: []
   /auth:
@@ -86,7 +207,7 @@ paths:
                     type: string
 components:
   schemas:
-    Element:
+    PokemonType:
       type: string
       enum:
         - Bug
@@ -111,23 +232,29 @@ components:
       properties:
         id:
           type: integer
+          description: ID of the Pokemon
           readOnly: true
         name:
           type: string
+          description: Name of the Pokemon
         classification:
           type: string
+          description: Classification of the Pokemon
         types:
           type: array
+          description: Pokemon types
           items:
-            $ref: "#/components/schemas/Element"
+            $ref: "#/components/schemas/PokemonType"
         resistant:
           type: array
+          description: Resistance to Pokemon types
           items:
-            $ref: "#/components/schemas/Element"
+            $ref: "#/components/schemas/PokemonType"
         weaknesses:
           type: array
+          description: Weaknesses to Pokemon types
           items:
-            $ref: "#/components/schemas/Element"
+            $ref: "#/components/schemas/PokemonType"
         weight:
           $ref: "#/components/schemas/BodyCharacteristic"
         height:
@@ -142,20 +269,43 @@ components:
               type: integer
             name:
               type: string
+        evolutions:
+          type: array
+          items:
+            $ref: "#/components/schemas/PokemonLink"
+        previousEvolutions:
+          type: array
+          items:
+            $ref: "#/components/schemas/PokemonLink"
         maxCP:
           type: integer
+          description: Maximum combat power.
         maxHP:
           type: integer
+          description: Maximum hit points.
+        attacks:
+          type: object
+          properties: 
+            fast:
+              type: array
+              items:
+                $ref: "#/components/schemas/Move"
+    PokemonLink:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
     Move:
       type: object
       properties:
         name:
           type: string
-          example: Tackle
         damage:
           type: integer
         type:
-          $ref: "#/components/schemas/Element"
+          $ref: "#/components/schemas/PokemonType"
     Attack:
       type: object
       additionalProperties:
@@ -169,6 +319,28 @@ components:
           type: string
         maximum:
           type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the user
+          readOnly: true
+        firstName:
+          type: string
+          description: First name of the user
+        lastName:
+          type: string
+          description: Last name of the user
+        email:
+          type: string
+          format: email
+          description: Email address of the user
+        password:
+          type: string
+          format: password
+          # writeOnly: true
+      required: [firstName, lastName, email, password]
   securitySchemes:
     bearer_auth:
       type: http

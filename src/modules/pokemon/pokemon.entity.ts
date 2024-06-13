@@ -1,5 +1,5 @@
 import { Collection, Entity, PrimaryKey, ManyToMany, OneToOne, OneToMany, Property } from '@mikro-orm/core';
-import { Element } from './element.entity.js';
+import { PokemonType } from './pokemonType.entity.js';
 import { Height } from './height.entity.js';
 import { Weight } from './weight.entity.js';
 import { EvolutionRequirement } from './evolutionrequirement.entity.js';
@@ -17,13 +17,13 @@ export class Pokemon {
   classification!: string;
 
   @ManyToMany()
-  types = new Collection<Element>(this);
+  types = new Collection<PokemonType>(this);
 
   @ManyToMany()
-  resistant = new Collection<Element>(this);
+  resistant = new Collection<PokemonType>(this);
 
   @ManyToMany()
-  weaknesses = new Collection<Element>(this);
+  weaknesses = new Collection<PokemonType>(this);
   
   @OneToOne()
   weight!: Weight;

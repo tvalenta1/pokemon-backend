@@ -1,10 +1,7 @@
 import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
 
 @Entity()
-export class Element {
+export class PokemonType {
   @PrimaryKey()
-  id!: number;
-
-  @Property()
-  name!: string;
+  type!: string;
 }
