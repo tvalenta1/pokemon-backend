@@ -3,25 +3,35 @@ import { fastify } from 'fastify';
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
 import openapiGlue from "fastify-openapi-glue";
+import { NotFoundError } from "@mikro-orm/core";
 import { initORM } from './db.js';
 import { User } from './modules/user/user.entity.js';
-import { Service } from './serviceHandlers.js';
+// import { Service } from './serviceHandlers.js';
+import serviceHandlers from './serviceHandlers.js';
+
 import { Security } from "./security.js";
 
 export async function bootstrap(port = 3000) {
+  const ormOptions = {
+    findOneOrFailHandler: (entityName: string, where: Dictionary | IPrimaryKey) => {
+      const error = new NotFoundError(`${entityName} not fousssnd!`);
+      // error["statusCode"] = 404;
+      return error;
+    },
+  }
   const db = await initORM();
   const app = fastify({
     logger: {
-      level: 'debug',
+      level: "trace",
       transport: {
-        target: 'pino-pretty'
+        target: "pino-pretty"
       }
     }
   });
 
   const oaGlueOptions = {
     specification: `${process.cwd()}/src/openapi/api-spec.yaml`,
-    serviceHandlers: new Service(),
+    serviceHandlers: serviceHandlers,//new Service(),
     securityHandlers: new Security(),
   };
 
@@ -62,13 +72,6 @@ export async function bootstrap(port = 3000) {
   // shut down the connection when closing the app
   app.addHook('onClose', async () => {
     await db.orm.close();
-  });
-
-  app.get('/users', async request => {
-    const { limit, offset } = request.query as { limit?: number; offset?: number };
-    const [items, total] = await db.user.findAndCount({}, { limit, offset });
-  
-    return { items, total };
   });
 
   // app.get('/pokemons', async request => {

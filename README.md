@@ -23,6 +23,9 @@ This section contains items that were not completelly implemented or were skippe
 
 There is no session handling implemented. Users can authenticate as many times in parallel as they want. The authentication token has expiry time and when that passes, the token is expired and user needs to re-authenticate. Since the sessions are not stored anywhere, it is not possible for the user to log out or to revoke somebody's token. The authenticated session ends when the token expires.
 
+### Password hashing
+For simplicity, SHA-256 hashing algorithm was picked to hash user passwords. However, for production use, I would propose to use some other hashing algorithm like for example `bcrypt`. As that algorithm is better suitable for password hashing and more difficult to hack (it is computationally slower than SHA-256).
+
 ## Notes
 To create initial migration:
 ```
