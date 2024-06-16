@@ -9,18 +9,12 @@ info:
 servers:
   - url: http://localhost:3000
 tags:
-  - name: pet
-    description: Everything about your Pets
-    externalDocs:
-      description: Find out more
-      url: http://swagger.io
-  - name: store
-    description: Access to Petstore orders
-    externalDocs:
-      description: Find out more about our store
-      url: http://swagger.io
-  - name: user
-    description: Operations about user
+  - name: Pokemons
+    description: CRUD endpoints for Pokemons
+  - name: Users
+    description: CRUD endpoints for Users
+  - name: Authentication
+    description: Authentication related endpoints
 security:
   - bearer_auth: []
 paths:
@@ -111,7 +105,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              allOf:
+                - $ref: "#/components/schemas/User"
+                - type: object
+                  required: [firstName, lastName, email, password]
       responses:
         "201":
           description: User created successfully
@@ -204,7 +201,7 @@ paths:
         - Users
         - Pokemons
       summary: Get favorite pokemons
-      description: Returns user's favorite pokemons.
+      description: Returns user's favorite pokemons. It takes the currently authenticated user (based on bearer token).
       operationId: getFavoritePokemons
       responses:
         "200":
@@ -223,17 +220,17 @@ paths:
         - Users
         - Pokemons
       summary: Make favorite pokemon
-      description: Sets pokemon to be user's favorite.
+      description: Sets pokemon to be user's favorite. User it taken from bearer token.
       operationId: setFavoritePokemon
       responses:
         "204":
-          description: Pokemon set favorite successfully
+          description: Pokemon successfully set user's favorite
     delete:
       tags:
         - Users
         - Pokemons
       summary: Remove favorite pokemon
-      description: Removes Pokemon from user's favorites.
+      description: Removes Pokemon from user's favorites. User is taken from bearer token.
       operationId: removeFavoritePokemon
       responses:
         "204":
@@ -372,8 +369,7 @@ components:
         password:
           type: string
           format: password
-          # writeOnly: true
-      required: [firstName, lastName, email, password]
+          writeOnly: true
   parameters:
     pokemonId:
       in: path

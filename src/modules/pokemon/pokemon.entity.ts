@@ -4,6 +4,7 @@ import { Height } from './height.entity.js';
 import { Weight } from './weight.entity.js';
 import { EvolutionRequirement } from './evolutionrequirement.entity.js';
 import { Attack } from './attack.entity.js';
+import { User } from "../user/user.entity.js"
 
 @Entity()
 export class Pokemon {
@@ -40,12 +41,39 @@ export class Pokemon {
   @Property()
   maxHP!: number;
 
-  @OneToOne()
-  evolutionRequirements!: EvolutionRequirement;
+  @OneToOne({ nullable: true, default: null })
+  evolutionRequirements?: EvolutionRequirement | null;
+
+  @OneToOne({ nullable: true, default: null })
+  evolutions? = new Collection<Pokemon>(this);
+
+  // @OneToOne()
+  // attacks?: Attack;
 
   @ManyToMany()
-  evolutions = new Collection<Pokemon>(this);
+  favoriteForUsers = new Collection<User>(this);
 
-  @OneToMany({ mappedBy: "pokemon" })
-  attacks = new Collection<Attack>(this);
+  output() {
+    return {
+      id: this.id,
+      name: this.name,
+      classification: this.classification, 
+      types: this.outputTypes(this.types),
+      resistant: this.outputTypes(this.resistant),
+      weaknesses: this.outputTypes(this.weaknesses),
+      weight: this.weight,
+      height: this.height,
+      fleeRate: this.fleeRate,
+      maxCP: this.maxCP,
+      maxHP: this.maxHP,
+      evolutionRequirements: this.evolutionRequirements,
+      evolutions: this.evolutions?.toArray(),
+      //attacks: this.attacks
+    };
+  }
+
+  outputTypes(types: Collection<PokemonType>) {
+    return types.toArray().map(o => o.type);
+  }
+  
 }

@@ -1,6 +1,5 @@
-import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
+import { PrimaryKey, Property } from '@mikro-orm/core';
 
-@Entity()
 export class BodyCharacteristic {
   @PrimaryKey()
   id!: number;

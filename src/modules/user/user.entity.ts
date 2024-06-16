@@ -19,7 +19,7 @@ export class User {
     @Property({ hidden: true })
     password!: string;
 
-    @ManyToMany()
+    @ManyToMany({ lazy: true })
     favoritePokemons = new Collection<Pokemon>(this);
 
     constructor(firstName: string, lastName: string, email: string, password: string) {

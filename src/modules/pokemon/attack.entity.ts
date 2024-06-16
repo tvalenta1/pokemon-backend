@@ -1,4 +1,4 @@
-import { Collection, Entity, OneToMany, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core';
+import { Collection, Entity, Enum, OneToMany, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core';
 import { Move } from './move.entity.js';
 import { Pokemon } from './pokemon.entity.js';
 
@@ -8,12 +8,17 @@ export class Attack {
   @PrimaryKey()
   id!: number;
 
-  @ManyToOne()
-  pokemon!: Pokemon;
+  // @ManyToOne("Pokemon")
+  // pokemon!: Pokemon;
 
-  @Property()
-  type!: "fast" | "special";
-
+  @Enum(() => AttackType)
+  type!: AttackType;
+  
   @OneToMany({ mappedBy: "attack" })
   moves = new Collection<Move>(this);
+}
+
+export enum AttackType {
+  FAST = 'fast',
+  SPECIAL = 'special'
 }

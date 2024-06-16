@@ -18,6 +18,11 @@ export async function bootstrap(port = 3000) {
       transport: {
         target: "pino-pretty"
       }
+    },
+    ajv: {
+      customOptions: {
+        strict: false
+      }
     }
   });
 
