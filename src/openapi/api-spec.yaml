@@ -20,14 +20,35 @@ security:
 paths:
   /pokemons:
     get:
+      parameters:
+        - name: name
+          in: query
+          description: Pokemon name
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Pagination attribute. Amount of results to be returned
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: Pagination attribute. How many records to offset.
+          schema:
+            type: integer
       tags:
         - Pokemons
       summary: Get Pokemons
-      description: Returns all Pokemons.
+      description: Returns all Pokemons. It supports pagination (limit & offset attributes) and searching by pokemon name.      
       operationId: getPokemons
       responses:
         '200':
           description: Pokemons returned successfully.
+          headers:
+            x-total-count:
+              schema:
+                type: integer
+              description: Total amount of results in the database. Used for pagination.
           content:
             application/json:
               schema:

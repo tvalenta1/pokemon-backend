@@ -4,8 +4,26 @@ import { HEADER_TOTAL_COUNT } from "../../constants.js";
 const db = await initORM();
 
 export async function getPokemons(req, resp) {
-  const { limit, offset } = req.query as { limit?: number; offset?: number };
-  const [pokemons, total] = await db.pokemon.findAndCount({ }, { limit, offset, populate: ["weight", "height", "evolutionRequirements", "types", "resistant", "weaknesses", "evolutions"] });
+  const { limit, offset, name } = req.query as {
+    limit?: number;
+    offset?: number;
+    name?: string;
+  };
+  const where = name ? { name } : {};
+  const [pokemons, total] = await db.pokemon.findAndCount(where, {
+    limit,
+    offset,
+    populate: [
+      "weight",
+      "height",
+      "evolutionRequirements",
+      "types",
+      "resistant",
+      "weaknesses",
+      "evolvesInto",
+      "evolvesFrom",
+    ],
+  },);
   resp.header(HEADER_TOTAL_COUNT, total);
   console.log(pokemons);
   return pokemons;
@@ -13,9 +31,9 @@ export async function getPokemons(req, resp) {
 
 export async function getPokemon(req, resp) {
   // try {
-    const pokemon = await db.pokemon.findOneOrFail({ id: req.params.pokemonId }, { populate: ["weight", "height", "evolutionRequirements", "types", "resistant", "weaknesses", "evolutions"] });
-    console.log(pokemon);
-    return pokemon.output();
+  const pokemon = await db.pokemon.findOneOrFail({ id: req.params.pokemonId }, { populate: ["weight", "height", "evolutionRequirements", "types", "resistant", "weaknesses", "evolvesInto", "evolvesFrom"] });
+  console.log(pokemon);
+  return pokemon.output();
   // } catch (error) {
     // if (error.name === "NotFoundError") error.statusCode = 404;
     // throw error;
