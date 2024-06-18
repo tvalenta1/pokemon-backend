@@ -79,6 +79,22 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Pokemon"
+  /pokemon_types:
+    get:
+      tags:
+        - Pokemons
+      summary: Get pokemon types
+      description: Returns all pokemon types
+      operationId: getPokemonTypes
+      responses:
+        "200":
+          description: List of pokemon types was retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PokemonType"
   /users:
     get:
       tags:
@@ -299,14 +315,17 @@ components:
               type: integer
             name:
               type: string
+          nullable: true
         evolutions:
           type: array
           items:
             $ref: "#/components/schemas/PokemonLink"
+          nullable: true
         previousEvolutions:
           type: array
           items:
             $ref: "#/components/schemas/PokemonLink"
+          nullable: true
         maxCP:
           type: integer
           description: Maximum combat power.

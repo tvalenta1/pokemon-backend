@@ -4,4 +4,8 @@ import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
 export class PokemonType {
   @PrimaryKey()
   type!: string;
+
+  output() {
+    return this.type;
+  }
 }
