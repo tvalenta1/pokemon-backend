@@ -1,6 +1,12 @@
-import { Entity, PrimaryKey, ManyToOne, OneToOne, Property } from '@mikro-orm/core';
-import { Attack } from './attack.entity.js';
-import { PokemonType } from './pokemonType.entity.js';
+import {
+  Entity,
+  PrimaryKey,
+  ManyToOne,
+  OneToOne,
+  Property
+} from "@mikro-orm/core";
+import { Attack } from "./attack.entity.js";
+import { PokemonType } from "./pokemonType.entity.js";
 
 @Entity()
 export class Move {
@@ -13,7 +19,7 @@ export class Move {
   @Property()
   name!: string;
 
-  @OneToOne()
+  @ManyToOne()
   type!: PokemonType;
 
   @Property()

@@ -1,13 +1,26 @@
-import { Collection, Entity, PrimaryKey, ManyToMany, OneToOne, OneToMany, Property } from '@mikro-orm/core';
-import { PokemonType } from './pokemonType.entity.js';
-import { Height } from './height.entity.js';
-import { Weight } from './weight.entity.js';
-import { EvolutionRequirement } from './evolutionrequirement.entity.js';
-import { Attack } from './attack.entity.js';
-import { User } from "../user/user.entity.js"
+import {
+  Collection,
+  DoubleType,
+  Entity,
+  PrimaryKey,
+  ManyToMany,
+  OneToOne,
+  OneToMany,
+  Property,
+} from "@mikro-orm/core";
+
+import { PokemonType } from "./pokemonType.entity.js";
+import { Height } from "./height.entity.js";
+import { Weight } from "./weight.entity.js";
+import { EvolutionRequirement } from "./evolutionrequirement.entity.js";
+import { Attack } from "./attack.entity.js";
+import { User } from "../user/user.entity.js";
 
 @Entity()
 export class Pokemon {
+  // constructor(id: number, name: string, classification: string, ) {
+
+  // }
   @PrimaryKey()
   id!: number;
 
@@ -25,14 +38,14 @@ export class Pokemon {
 
   @ManyToMany()
   weaknesses = new Collection<PokemonType>(this);
-  
-  @OneToOne()
+
+  @OneToOne({ orphanRemoval: true })
   weight!: Weight;
 
-  @OneToOne()
+  @OneToOne({ orphanRemoval: true })
   height!: Height;
 
-  @Property()
+  @Property({ type: DoubleType })
   fleeRate!: number;
 
   @Property()
@@ -42,22 +55,22 @@ export class Pokemon {
   maxHP!: number;
 
   @OneToOne({ nullable: true, default: null })
-  evolutionRequirements?: EvolutionRequirement | null;
+  evolutionRequirements?: EvolutionRequirement;
 
   @OneToOne({ nullable: true, default: null })
-  evolutions? = new Collection<Pokemon>(this);
+  evolvesInto?: Pokemon;
 
-  // @OneToOne()
-  // attacks?: Attack;
+  @OneToOne({ nullable: true, default: null })
+  evolvesFrom?: Pokemon;
 
-  @ManyToMany()
-  favoriteForUsers = new Collection<User>(this);
+  @OneToMany(() => Attack, (attack) => attack.pokemon) //{ entity: () => Attack, mappedBy: "pokemon" })
+  attacks = new Collection<Attack>(this);
 
   output() {
     return {
       id: this.id,
       name: this.name,
-      classification: this.classification, 
+      classification: this.classification,
       types: this.outputTypes(this.types),
       resistant: this.outputTypes(this.resistant),
       weaknesses: this.outputTypes(this.weaknesses),
@@ -67,13 +80,21 @@ export class Pokemon {
       maxCP: this.maxCP,
       maxHP: this.maxHP,
       evolutionRequirements: this.evolutionRequirements,
-      evolutions: this.evolutions?.toArray(),
-      //attacks: this.attacks
+      evolutions: this.evolvesInto,
+      attacks: this.outputAttacks(this.attacks)
     };
   }
 
   outputTypes(types: Collection<PokemonType>) {
-    return types.toArray().map(o => o.type);
+    return types.map((type) => type.output());
   }
-  
+
+  outputAttacks(attacks: Collection<Attack>) {
+    const outputAttacks = {};
+    for (const attack of attacks) {
+      const moves = attack.moves.toArray();
+      outputAttacks[attack.type] = moves;
+    }
+    return outputAttacks;
+  }
 }
