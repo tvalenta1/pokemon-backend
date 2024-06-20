@@ -1,4 +1,4 @@
-import { bootstrap }  from './app.js';
+import { bootstrap } from "./app.js";
 
 try {
   const { url } = await bootstrap();

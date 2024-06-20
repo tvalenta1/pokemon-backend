@@ -3,7 +3,7 @@ import {
   EntityRepository,
   MikroORM,
   Options,
-} from "@mikro-orm/sqlite";
+} from "@mikro-orm/postgresql";
 import { User } from "./modules/user/user.entity.js";
 import { Pokemon } from "./modules/pokemon/pokemon.entity.js";
 import { PokemonType } from "./modules/pokemon/pokemonType.entity.js";
