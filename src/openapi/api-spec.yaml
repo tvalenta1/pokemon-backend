@@ -65,25 +65,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                id:
-                  type: integer
-                name:
-                  type: string
+              $ref: "#/components/schemas/Pokemon"
       responses:
-        '200':
+        '201':
           description: Pokemons returned successfully.
           content:
             application/json:
               schema:
-                type: object
-                required: [id, name]
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
+                $ref: "#/components/schemas/Pokemon"
   /pokemons/{pokemonId}:
     parameters:
       - $ref: "#/components/parameters/pokemonId"
@@ -100,6 +89,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Pokemon"
+    patch:
+      tags:
+        - Pokemons
+      summary: Update Pokemon
+      description: Updates Pokemon attributes (one or more).
+      operationId: updatePokemon
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Pokemon"
+      responses:
+        '200':
+          description: Pokemon updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pokemon"
+    delete:
+      tags:
+        - Pokemons
+      summary: Delete Pokemon
+      description: Deletes Pokemon identified by its ID.
+      operationId: deletePokemon
+      responses:
+        '204':
+          description: Pokemon deleted successfully.
   /pokemon_types:
     get:
       tags:
@@ -329,6 +345,10 @@ components:
         fleeRate:
           type: number
           format: double
+        evolvesInto:
+          writeOnly: true
+          allOf:
+            - $ref: "#/components/schemas/PokemonLink"
         evolutionRequirements:
           type: object
           properties:

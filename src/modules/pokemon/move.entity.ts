@@ -1,8 +1,8 @@
 import {
+  Cascade,
   Entity,
   PrimaryKey,
   ManyToOne,
-  OneToOne,
   Property
 } from "@mikro-orm/core";
 import { Attack } from "./attack.entity.js";
@@ -13,7 +13,7 @@ export class Move {
   @PrimaryKey()
   id!: number;
 
-  @ManyToOne()
+  @ManyToOne({ cascade: [Cascade.ALL] })
   attack!: Attack;
 
   @Property()

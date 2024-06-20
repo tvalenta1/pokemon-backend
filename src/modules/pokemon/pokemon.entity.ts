@@ -1,4 +1,5 @@
 import {
+  Cascade,
   Collection,
   DoubleType,
   Entity,
@@ -7,6 +8,7 @@ import {
   OneToOne,
   OneToMany,
   Property,
+  wrap
 } from "@mikro-orm/core";
 
 import { PokemonType } from "./pokemonType.entity.js";
@@ -14,13 +16,11 @@ import { Height } from "./height.entity.js";
 import { Weight } from "./weight.entity.js";
 import { EvolutionRequirement } from "./evolutionrequirement.entity.js";
 import { Attack } from "./attack.entity.js";
-import { User } from "../user/user.entity.js";
+import { AttackType } from "./attack.entity.js";
+import { Move } from "./move.entity.js";
 
 @Entity()
 export class Pokemon {
-  // constructor(id: number, name: string, classification: string, ) {
-
-  // }
   @PrimaryKey()
   id!: number;
 
@@ -60,10 +60,9 @@ export class Pokemon {
   @OneToOne({ nullable: true, default: null })
   evolvesInto?: Pokemon;
 
-  @OneToOne({ nullable: true, default: null })
-  evolvesFrom?: Pokemon;
-
-  @OneToMany(() => Attack, (attack) => attack.pokemon) //{ entity: () => Attack, mappedBy: "pokemon" })
+  @OneToMany(() => Attack, (attack) => attack.pokemon, {
+    cascade: [Cascade.ALL]
+  })
   attacks = new Collection<Attack>(this);
 
   output() {
@@ -80,8 +79,16 @@ export class Pokemon {
       maxCP: this.maxCP,
       maxHP: this.maxHP,
       evolutionRequirements: this.evolutionRequirements,
-      evolutions: this.evolvesInto,
+      evolutions: [this.outpuPokemonLink(this.evolvesInto)],
       attacks: this.outputAttacks(this.attacks)
+    };
+  }
+
+  outpuPokemonLink(pokemon: Pokemon | undefined) {
+    if (!pokemon) return null;
+    return {
+      id: pokemon.id,
+      name: pokemon.name
     };
   }
 
@@ -96,5 +103,39 @@ export class Pokemon {
       outputAttacks[attack.type] = moves;
     }
     return outputAttacks;
+  }
+
+  static createPokemon(inputAttributes: any, entityManager: any) {
+    const pokemon = new Pokemon();
+    pokemon.name = inputAttributes.name;
+    pokemon.classification = inputAttributes.classification;
+    pokemon.fleeRate = inputAttributes.fleeRate;
+    pokemon.maxCP = inputAttributes.maxCP;
+    pokemon.maxHP = inputAttributes.maxHP;
+    Object.keys(inputAttributes.attacks).map((value) => {
+      const attack = new Attack();
+      attack.pokemon = pokemon;
+      attack.type = value as AttackType;
+      for (const attackMove of inputAttributes.attacks[value]) {
+        const move = new Move();
+        move.name = attackMove.name;
+        move.type = attackMove.type;
+        move.damage = attackMove.damage;
+        attack.moves.add(move);
+      }
+      pokemon.attacks.add(attack);
+    });
+    wrap(pokemon).assign(
+      {
+        types: inputAttributes.types,
+        weight: inputAttributes.weight,
+        height: inputAttributes.height,
+        resistant: inputAttributes.resistant,
+        weaknesses: inputAttributes.weaknesses,
+        evolutionRequirements: inputAttributes.evolutionRequirements
+      },
+      { em: entityManager }
+    );
+    return pokemon;
   }
 }

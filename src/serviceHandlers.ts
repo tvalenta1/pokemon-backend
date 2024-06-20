@@ -14,6 +14,8 @@ import {
   createPokemon,
   getPokemon,
   getPokemons,
+  updatePokemon,
+  deletePokemon
 } from "./modules/pokemon/pokemon.controller.js";
 
 export default {
@@ -26,6 +28,8 @@ export default {
   createPokemon,
   getPokemon,
   getPokemons,
+  updatePokemon,
+  deletePokemon,
   getPokemonTypes,
   getFavoritePokemons,
   setFavoritePokemon,

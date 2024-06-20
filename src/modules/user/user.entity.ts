@@ -1,39 +1,59 @@
-import crypto from 'crypto';
-import { Collection, Entity, PrimaryKey, ManyToMany, Property } from '@mikro-orm/core';
-import { Pokemon } from '../pokemon/pokemon.entity.js';
+import crypto from "crypto";
+import {
+  Collection,
+  Entity,
+  PrimaryKey,
+  ManyToMany,
+  Property
+} from "@mikro-orm/core";
+import { Pokemon } from "../pokemon/pokemon.entity.js";
 
 @Entity()
 export class User {
-    @PrimaryKey()
-    id!: number;
+  @PrimaryKey()
+  id!: number;
 
-    @Property()
-    firstName!: string;
+  @Property()
+  firstName!: string;
 
-    @Property()
-    lastName!: string;
+  @Property()
+  lastName!: string;
 
-    @Property({ unique: true })
-    email!: string;
+  @Property({ unique: true })
+  email!: string;
 
-    @Property({ hidden: true })
-    password!: string;
+  @Property({ hidden: true })
+  password!: string;
 
-    @ManyToMany({ lazy: true })
-    favoritePokemons = new Collection<Pokemon>(this);
+  @ManyToMany({ lazy: true })
+  favoritePokemons = new Collection<Pokemon>(this);
 
-    constructor(firstName: string, lastName: string, email: string, password: string) {
-      this.firstName = firstName;
-      this.lastName = lastName;
-      this.email = email;
-      this.password = User.hashPassword(password);
-    }
+  constructor(
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
+  ) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.email = email;
+    this.password = User.hashPassword(password);
+  }
 
-    static isValidPassword(password: string, passwordInDB: string) {
-      return User.hashPassword(password) === passwordInDB;
-    }
+  outputForToken() {
+    return {
+      id: this.id,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      email: this.email
+    };
+  }
 
-    static hashPassword(password: string) {
-      return crypto.createHmac('sha256', password).digest('hex');
-    }
+  static isValidPassword(password: string, passwordInDB: string) {
+    return User.hashPassword(password) === passwordInDB;
+  }
+
+  static hashPassword(password: string) {
+    return crypto.createHmac("sha256", password).digest("hex");
+  }
 }

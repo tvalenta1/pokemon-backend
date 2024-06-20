@@ -1,11 +1,11 @@
 import {
+  Cascade,
   Collection,
   Entity,
   Enum,
   OneToMany,
   ManyToOne,
-  PrimaryKey,
-  Property,
+  PrimaryKey
 } from "@mikro-orm/core";
 import { Move } from "./move.entity.js";
 import type { Pokemon } from "./pokemon.entity.js";
@@ -15,7 +15,7 @@ export class Attack {
   @PrimaryKey()
   id!: number;
 
-  @ManyToOne()
+  @ManyToOne({ cascade: [Cascade.ALL] })
   pokemon!: Pokemon;
 
   @Enum(() => AttackType)
@@ -27,5 +27,5 @@ export class Attack {
 
 export enum AttackType {
   FAST = "fast",
-  SPECIAL = "special",
+  SPECIAL = "special"
 }
