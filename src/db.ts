@@ -2,7 +2,7 @@ import {
   EntityManager,
   EntityRepository,
   MikroORM,
-  Options,
+  Options
 } from "@mikro-orm/postgresql";
 import { User } from "./modules/user/user.entity.js";
 import { Pokemon } from "./modules/pokemon/pokemon.entity.js";
@@ -30,6 +30,6 @@ export async function initORM(options?: Options): Promise<Services> {
     em: orm.em,
     pokemon: orm.em.getRepository(Pokemon),
     user: orm.em.getRepository(User),
-    pokemonType: orm.em.getRepository(PokemonType),
+    pokemonType: orm.em.getRepository(PokemonType)
   });
 }

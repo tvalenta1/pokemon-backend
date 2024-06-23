@@ -6,9 +6,13 @@ import openapiGlue from "fastify-openapi-glue";
 import { initORM } from "./db.js";
 import serviceHandlers from "./serviceHandlers.js";
 import securityHandler from "./modules/authentication/security.handler.js";
+import { EvolutionsCacheService } from "./modules/pokemon/evolutionsCache.service.js";
 
 export async function bootstrap(port = 3000) {
   const db = await initORM();
+
+  // Populate the Pokemon evolutions cache
+  EvolutionsCacheService.refreshCache();
   const app = fastify({
     logger: {
       level: "trace",
@@ -64,12 +68,12 @@ export async function bootstrap(port = 3000) {
     transformSpecificationClone: true
   });
 
-  // register request context hook
+  // Register request context hook
   app.addHook("onRequest", (request, reply, done) => {
     RequestContext.create(db.em, done);
   });
 
-  // shut down the connection when closing the app
+  // Shut down the connection when closing the app
   app.addHook("onClose", async () => {
     await db.orm.close();
   });
