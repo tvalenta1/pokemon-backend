@@ -69,13 +69,15 @@ export async function updatePokemon(req: any, resp: any) {
   );
   await db.em.persist(updatedPokemon).flush();
   // Refresh cache to pick up any new evolutions / previous evolutions.
-  EvolutionsCacheService.refreshCache();
+  await EvolutionsCacheService.refreshCache();
   return updatedPokemon.output(pokemonsEvolutionsCache);
 }
 
 export async function deletePokemon(req: any, resp: any) {
   const pokemon = await db.pokemon.findOneOrFail({ id: req.params.pokemonId });
   await db.em.remove(pokemon).flush();
+  // Refresh cache to pick up any new evolutions / previous evolutions.
+  EvolutionsCacheService.refreshCache();
   resp.status(204);
   return;
 }

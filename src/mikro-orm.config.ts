@@ -2,14 +2,16 @@ import { Options, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { TsMorphMetadataProvider } from "@mikro-orm/reflection";
 import { SeedManager } from "@mikro-orm/seeder";
 import { Migrator } from "@mikro-orm/migrations";
+import config from "./config.js";
 import { AppError } from "./AppError.js";
 
 import type { Dictionary, IPrimaryKey } from "@mikro-orm/core";
 
-const config: Options = {
+const dbConfig: Options = {
   driver: PostgreSqlDriver,
+  ensureDatabase: false,
   dbName: "postgresql",
-  host: "localhost",
+  host: config.POSTGRES_HOST,
   user: "postgres",
   password: "supersecret",
   entities: ["dist/**/*.entity.js"],
@@ -20,12 +22,12 @@ const config: Options = {
   extensions: [SeedManager, Migrator],
   findOneOrFailHandler: (
     entityName: string,
-    where: Dictionary | IPrimaryKey,
+    where: Dictionary | IPrimaryKey
   ) => {
     return new AppError(
       "NotFoundError",
       `${entityName} not found! (${JSON.stringify(where)})`,
-      404,
+      404
     );
   },
   seeder: {
@@ -38,4 +40,4 @@ const config: Options = {
   }
 };
 
-export default config;
+export default dbConfig;

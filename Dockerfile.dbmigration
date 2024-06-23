@@ -1,10 +1,12 @@
 FROM node:20.12.2@sha256:740804d1d9a2a05282a7a359446398ec5f233eea431824dd42f7ba452fa5ab98
 
-EXPOSE 3000:3000
-WORKDIR /app
+WORKDIR /db-migration
 
 # Add source files
-ADD ./ .
+ADD package.json .
+ADD tsconfig.json .
+ADD src/ src/
+ADD db-migration-script.sh .
 
 # Install dependencies
 RUN yarn install
@@ -12,5 +14,5 @@ RUN yarn install
 # Build server
 RUN yarn build
 
-# Start server
-CMD yarn start:prod
+# Run DB migration and data seeders
+CMD sh db-migration-script.sh

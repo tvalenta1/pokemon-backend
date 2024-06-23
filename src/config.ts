@@ -1,6 +1,12 @@
 import convict from "convict";
 
 const schema = {
+  POSTGRES_HOST: {
+    doc: "Postgres DB hostname",
+    format: String,
+    default: "localhost",
+    env: "POSTGRES_HOST"
+  },
   JWT_ENCRYPTION_SECRET: {
     doc: "Secret for JWT key encryption.",
     format: String,
