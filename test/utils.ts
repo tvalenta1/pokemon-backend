@@ -5,9 +5,7 @@ export async function initTestApp(port: number) {
   const { orm } = await initORM({
     debug: false,
     dbName: ":memory:",
-    // this will ensure the ORM discovers TS entities, with ts-node, ts-jest and vitest
-    // it will be inferred automatically, but we are using vitest here
-    // tsNode: true,
+    tsNode: true,
   });
 
   await orm.schema.createSchema();
