@@ -26,7 +26,7 @@ import type { PokemonEvolution } from "./evolutionsCache.service.js";
 @Entity()
 @Filter({
   name: "ofName",
-  cond: (args) => ({ name: { $like: `%${args.name}%` } }),
+  cond: (args) => ({ name: { $ilike: `%${args.name}%` } }),
   default: false
 })
 export class Pokemon {

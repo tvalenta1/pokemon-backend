@@ -9,7 +9,7 @@ import {
 const db = await initORM();
 
 export async function getPokemons(req: any, resp: any) {
-  const { name } = req.query as { name?: string };
+  const { name, type } = req.query as { name?: string; type?: string };
   let { limit, offset } = req.query as {
     limit?: number;
     offset?: number;
@@ -21,25 +21,23 @@ export async function getPokemons(req: any, resp: any) {
     offset = req.routeOptions?.schema?.querystring?.properties?.offset?.default;
 
   const filters = name ? { ofName: { name } } : undefined;
-  const [pokemons, total] = await db.pokemon.findAndCount(
-    {},
-    {
-      limit,
-      offset,
-      populate: [
-        "weight",
-        "height",
-        "evolutionRequirements",
-        "types",
-        "resistant",
-        "weaknesses",
-        "evolvesInto",
-        "attacks",
-        "attacks.moves"
-      ],
-      filters
-    }
-  );
+  const where = type ? { types: { type: { $ilike: type } } } : {};
+  const [pokemons, total] = await db.pokemon.findAndCount(where, {
+    limit,
+    offset,
+    populate: [
+      "weight",
+      "height",
+      "evolutionRequirements",
+      "types",
+      "resistant",
+      "weaknesses",
+      "evolvesInto",
+      "attacks",
+      "attacks.moves"
+    ],
+    filters
+  });
   resp.header(HEADER_TOTAL_COUNT, total);
   return pokemons.map((pokemon) => pokemon.output(pokemonsEvolutionsCache));
 }

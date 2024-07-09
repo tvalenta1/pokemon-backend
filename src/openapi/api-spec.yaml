@@ -26,6 +26,11 @@ paths:
           description: Pokemon name
           schema:
             type: string
+        - name: type
+          in: query
+          description: Pokemon type
+          schema:
+            type: string
         - name: limit
           in: query
           description: Pagination attribute. Amount of results to be returned
