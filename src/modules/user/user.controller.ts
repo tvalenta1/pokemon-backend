@@ -1,6 +1,8 @@
 import { wrap } from "@mikro-orm/core";
 import { initORM } from "../../db.js";
 import { User } from "./user.entity.js";
+import { AppError } from "../../AppError.js";
+import { pokemonsEvolutionsCache } from "../pokemon/evolutionsCache.service.js";
 
 const db = await initORM();
 
@@ -42,13 +44,41 @@ export async function deleteUser(req: any, resp: any) {
 
 export async function getFavoritePokemons(req: any, resp: any) {
   const userId = req.authenticatedUser.id;
-  const userWithFavoritePokemons = await db.user.findOneOrFail({ id: userId }, { populate: ["favoritePokemons"] });
-  return userWithFavoritePokemons.favoritePokemons.getItems();
+  const userWithFavoritePokemons = await db.user.findOneOrFail(
+    { id: userId },
+    {
+      populate: [
+        "favoritePokemons",
+        "favoritePokemons.weight",
+        "favoritePokemons.height",
+        "favoritePokemons.evolutionRequirements",
+        "favoritePokemons.types",
+        "favoritePokemons.resistant",
+        "favoritePokemons.weaknesses",
+        "favoritePokemons.evolvesInto",
+        "favoritePokemons.isFavoriteFor",
+        "favoritePokemons.attacks",
+        "favoritePokemons.attacks.moves"
+      ]
+    }
+  );
+  return userWithFavoritePokemons.favoritePokemons
+    .getItems()
+    .map((pokemon) => pokemon.output(pokemonsEvolutionsCache));
 }
 
 export async function setFavoritePokemon(req: any, resp: any) {
   const pokemon = await db.pokemon.findOneOrFail({ id: req.params.pokemonId });
-  const user = await db.user.findOneOrFail({ id: req.authenticatedUser.id });
+  const user = await db.user.findOneOrFail(
+    { id: req.authenticatedUser.id },
+    { populate: ["favoritePokemons"] }
+  );
+  if (user.favoritePokemons.contains(pokemon))
+    throw new AppError(
+      "SetFavoritePokemonError",
+      "User already has this Pokemon as favorite",
+      400
+    );
   wrap(user).assign({ favoritePokemons: pokemon });
   await db.em.flush();
   resp.status(204);
