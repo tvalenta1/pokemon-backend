@@ -13,6 +13,7 @@ import { getPokemonTypes } from "./modules/pokemon/pokemonType.controller.js";
 import {
   createPokemon,
   getPokemon,
+  getPokemonByName,
   getPokemons,
   updatePokemon,
   deletePokemon
@@ -27,6 +28,7 @@ export default {
   deleteUser,
   createPokemon,
   getPokemon,
+  getPokemonByName,
   getPokemons,
   updatePokemon,
   deletePokemon,

@@ -129,6 +129,27 @@ paths:
       responses:
         '204':
           description: Pokemon deleted successfully.
+  /pokemon_by_name/{pokemonName}:
+    parameters:
+      - name: pokemonName
+        in: path
+        required: true
+        description: Pokemon name
+        schema:
+          type: string
+    get:
+      tags:
+        - Pokemons
+      summary: Get Pokemon by name
+      description: Returns one Pokemon identified by its name.
+      operationId: getPokemonByName
+      responses:
+        '200':
+          description: Pokemon returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pokemon"
   /pokemon_types:
     get:
       tags:

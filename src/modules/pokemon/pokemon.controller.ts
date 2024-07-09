@@ -72,6 +72,26 @@ export async function getPokemon(req: any, resp: any) {
   return pokemon.output(pokemonsEvolutionsCache);
 }
 
+export async function getPokemonByName(req: any, resp: any) {
+  const pokemon = await db.pokemon.findOneOrFail(
+    { name: { $ilike: req.params.pokemonName } },
+    {
+      populate: [
+        "weight",
+        "height",
+        "evolutionRequirements",
+        "types",
+        "resistant",
+        "weaknesses",
+        "evolvesInto",
+        "attacks",
+        "attacks.moves"
+      ]
+    }
+  );
+  return pokemon.output(pokemonsEvolutionsCache);
+}
+
 export async function createPokemon(req: any, resp: any) {
   const pokemon = Pokemon.createPokemon(req.body, db.em);
   await db.em.persist(pokemon).flush();
