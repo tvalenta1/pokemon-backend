@@ -28,8 +28,6 @@ export class PokemonSeeder extends Seeder {
         );
         await em.persist(updatedPokemon).flush();
       }
-      const newPokemon = Pokemon.createPokemon(pokemon, em);
-      await em.persist(newPokemon).flush();
     }
   }
 }
