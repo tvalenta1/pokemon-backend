@@ -3,6 +3,7 @@ import {
   Collection,
   DoubleType,
   Entity,
+  Filter,
   PrimaryKey,
   ManyToMany,
   OneToOne,
@@ -23,6 +24,11 @@ import type { EntityManager } from "@mikro-orm/core";
 import type { PokemonEvolution } from "./evolutionsCache.service.js";
 
 @Entity()
+@Filter({
+  name: "ofName",
+  cond: (args) => ({ name: { $like: `%${args.name}%` } }),
+  default: false
+})
 export class Pokemon {
   @PrimaryKey()
   id!: number;

@@ -31,11 +31,13 @@ paths:
           description: Pagination attribute. Amount of results to be returned
           schema:
             type: integer
+            default: 50
         - name: offset
           in: query
           description: Pagination attribute. How many records to offset.
           schema:
             type: integer
+            default: 0
       tags:
         - Pokemons
       summary: Get Pokemons

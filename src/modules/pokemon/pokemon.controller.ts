@@ -9,27 +9,37 @@ import {
 const db = await initORM();
 
 export async function getPokemons(req: any, resp: any) {
-  const { limit, offset, name } = req.query as {
+  const { name } = req.query as { name?: string };
+  let { limit, offset } = req.query as {
     limit?: number;
     offset?: number;
-    name?: string;
   };
-  const where = name ? { name } : {};
-  const [pokemons, total] = await db.pokemon.findAndCount(where, {
-    limit,
-    offset,
-    populate: [
-      "weight",
-      "height",
-      "evolutionRequirements",
-      "types",
-      "resistant",
-      "weaknesses",
-      "evolvesInto",
-      "attacks",
-      "attacks.moves"
-    ]
-  });
+  // Get default values from the OpenAPI spec
+  if (!limit)
+    limit = req.routeOptions?.schema?.querystring?.properties?.limit?.default;
+  if (!offset)
+    offset = req.routeOptions?.schema?.querystring?.properties?.offset?.default;
+
+  const filters = name ? { ofName: { name } } : undefined;
+  const [pokemons, total] = await db.pokemon.findAndCount(
+    {},
+    {
+      limit,
+      offset,
+      populate: [
+        "weight",
+        "height",
+        "evolutionRequirements",
+        "types",
+        "resistant",
+        "weaknesses",
+        "evolvesInto",
+        "attacks",
+        "attacks.moves"
+      ],
+      filters
+    }
+  );
   resp.header(HEADER_TOTAL_COUNT, total);
   return pokemons.map((pokemon) => pokemon.output(pokemonsEvolutionsCache));
 }
