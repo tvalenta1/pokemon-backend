@@ -2,6 +2,20 @@
 
 This project contains a Node.js API backend that serves a catalog of Pokemons. This could be used together with a Frontend application that displays the Pokemons and let users set their favorite Pokemons.
 
+## Updates - July 9th 2024
+
+- Pagination: setting default values for `limit` and `offset` parameters in the OpenAPI spec
+- Search Pokemons by name: added Mikro-ORM Filter to properly search for Pokemons by name (partial string search is supported)
+- Search Pokemons by type: new parameter `type` can be provided to GET `/pokemons` endpoint to search for Pokemons by type
+- Search Pokemons by favorite for authenticated user: new parameter `onlyFavorite` (true/false) in GET `/pokemons` endpoint will only return Pokemons that are favorite for the authenticated user.
+- All GET `/pokemons` search filters can be combined
+- Added new route GET `/pokemon_by_name/{pokemonName}` which searches for Pokemon by its name. The search is case-insensitive
+- Issues fixed:
+  - Fixed issue where Pokemons were being created twice during the initial database migration
+  - Fixed issue where "special" attacks were not returned in the Pokemon object
+  - Fixed issue where setting the same Pokemon as favorite multiple times returns 500 error. Now it returns 400 error with a message that this Pokemon is already user's favorite
+  - Fixed issue where favorite Pokemon objects were returned incomplete
+
 ## Pre-requisites
 
 Following programs must be installed to be able to run the API locally:
