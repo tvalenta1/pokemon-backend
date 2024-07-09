@@ -19,6 +19,7 @@ import { EvolutionRequirement } from "./evolutionrequirement.entity.js";
 import { Attack } from "./attack.entity.js";
 import { AttackType } from "./attack.entity.js";
 import { Move } from "./move.entity.js";
+import { User } from "../user/user.entity.js";
 
 import type { EntityManager } from "@mikro-orm/core";
 import type { PokemonEvolution } from "./evolutionsCache.service.js";
@@ -27,6 +28,11 @@ import type { PokemonEvolution } from "./evolutionsCache.service.js";
 @Filter({
   name: "ofName",
   cond: (args) => ({ name: { $ilike: `%${args.name}%` } }),
+  default: false
+})
+@Filter({
+  name: "onlyFavorite",
+  cond: (args) => ({ isFavoriteFor: { id: args.id } }),
   default: false
 })
 export class Pokemon {
@@ -73,6 +79,9 @@ export class Pokemon {
     cascade: [Cascade.ALL]
   })
   attacks = new Collection<Attack>(this);
+
+  @ManyToMany(() => User, (user) => user.favoritePokemons)
+  isFavoriteFor = new Collection<User>(this);
 
   output(evolutionsCache: Map<number, PokemonEvolution>) {
     return {

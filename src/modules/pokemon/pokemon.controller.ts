@@ -9,7 +9,11 @@ import {
 const db = await initORM();
 
 export async function getPokemons(req: any, resp: any) {
-  const { name, type } = req.query as { name?: string; type?: string };
+  const { name, type, onlyFavorite } = req.query as {
+    name?: string;
+    type?: string;
+    onlyFavorite?: boolean;
+  };
   let { limit, offset } = req.query as {
     limit?: number;
     offset?: number;
@@ -19,8 +23,13 @@ export async function getPokemons(req: any, resp: any) {
     limit = req.routeOptions?.schema?.querystring?.properties?.limit?.default;
   if (!offset)
     offset = req.routeOptions?.schema?.querystring?.properties?.offset?.default;
-
-  const filters = name ? { ofName: { name } } : undefined;
+  let filters = {};
+  if (name) {
+    filters = { ...filters, ofName: { name } };
+  }
+  if (onlyFavorite) {
+    filters = { ...filters, onlyFavorite: { id: req.authenticatedUser.id } };
+  }
   const where = type ? { types: { type: { $ilike: type } } } : {};
   const [pokemons, total] = await db.pokemon.findAndCount(where, {
     limit,
@@ -33,6 +42,7 @@ export async function getPokemons(req: any, resp: any) {
       "resistant",
       "weaknesses",
       "evolvesInto",
+      "isFavoriteFor",
       "attacks",
       "attacks.moves"
     ],

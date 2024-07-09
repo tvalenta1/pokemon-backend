@@ -31,6 +31,12 @@ paths:
           description: Pokemon type
           schema:
             type: string
+        - name: onlyFavorite
+          in: query
+          description: If set to true, it returns only user's favorite Pokemons
+          schema:
+            type: boolean
+            default: false
         - name: limit
           in: query
           description: Pagination attribute. Amount of results to be returned
